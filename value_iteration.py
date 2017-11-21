@@ -44,11 +44,11 @@ def evaluate_policy(env, policy, gamma = 1.0,  n = 100):
 
 def extract_policy(v, gamma = 1.0):
     """ Extract the policy given a value-function """
-    policy = np.zeros(env.env.nS)
-    for s in range(env.env.nS):
+    policy = np.zeros(env.nS)
+    for s in range(env.nS):
         q_sa = np.zeros(env.action_space.n)
         for a in range(env.action_space.n):
-            for next_sr in env.env.P[s][a]:
+            for next_sr in env.P[s][a]:
                 # next_sr is a tuple of (probability, next state, reward, done)
                 p, s_, r, _ = next_sr
                 q_sa[a] += (p * (r + gamma * v[s_]))
@@ -58,13 +58,13 @@ def extract_policy(v, gamma = 1.0):
 
 def value_iteration(env, gamma = 1.0):
     """ Value-iteration algorithm """
-    v = np.zeros(env.env.nS)  # initialize value-function
+    v = np.zeros(env.nS)  # initialize value-function
     max_iterations = 100000
     eps = 1e-20
     for i in range(max_iterations):
         prev_v = np.copy(v)
-        for s in range(env.env.nS):
-            q_sa = [sum([p*(r + prev_v[s_]) for p, s_, r, _ in env.env.P[s][a]]) for a in range(env.env.nA)] 
+        for s in range(env.nS):
+            q_sa = [sum([p*(r + prev_v[s_]) for p, s_, r, _ in env.P[s][a]]) for a in range(env.nA)] 
             v[s] = max(q_sa)
         if (np.sum(np.fabs(prev_v - v)) <= eps):
             print ('Value-iteration converged at iteration# %d.' %(i+1))
